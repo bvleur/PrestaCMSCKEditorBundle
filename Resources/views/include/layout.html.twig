@@ -68,5 +68,13 @@
                 'plugin.js'
         );
         initWysiwyg();
+
+        $(document).on('sonata.add_element', function (element) {
+            $.each($('textarea.wysiwyg'), function(index, element) {
+                if (!(element.name in CKEDITOR.instances)) {
+                    CKEDITOR.replace(element.name, {{ configuration | json_encode | raw }});
+                }
+            });
+        })
     });
 </script>
