@@ -9,6 +9,16 @@
 #}
 <script type="text/javascript" src="{{ asset('/bundles/prestacomposerpublic/ckeditor/ckeditor/ckeditor.js') }}"></script>
 <script type="text/javascript">
+    {% set configuration = {
+        filebrowserImageBrowseUrl: url('admin_sonata_media_media_browser'),
+        filebrowserImageUploadUrl: url('admin_sonata_media_media_upload', {
+                provider: "sonata.media.provider.image",
+                context: "prestacms"
+            }),
+        extraPlugins: 'internal_link'
+        }|merge(extraConfiguration)
+    %}
+
     function initWysiwyg()
     {
         try {
@@ -23,14 +33,7 @@
         }
         try {
             $.each($('textarea.wysiwyg'), function(index, element) {
-                CKEDITOR.replace(element.name, {
-                    filebrowserImageBrowseUrl: "{{ url('admin_sonata_media_media_browser') }}",
-                    filebrowserImageUploadUrl: "{{ url('admin_sonata_media_media_upload', {
-                            provider: "sonata.media.provider.image",
-                            context: "prestacms"
-                        }) }}",
-                    extraPlugins: 'internal_link'
-                });
+                CKEDITOR.replace(element.name, {{ configuration | json_encode | raw }});
             });
         } catch (e) {
             //usually fail with but this is not blocking
